@@ -28,7 +28,6 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
     }
 
     public function test_users_can_not_authenticate_with_invalid_password()
@@ -41,5 +40,31 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertGuest();
+    }
+
+    public function test_subscriber_users_are_redirected_to_home_after_login()
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+
+        $response->assertRedirect(RouteServiceProvider::HOME);
+    }
+
+    public function test_admin_users_are_redirected_to_admin_home_after_login()
+    {
+        $user = User::factory()->create([
+            'is_admin' => true,
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password'
+        ]);
+
+        $response->assertRedirect(RouteServiceProvider::ADMIN_HOME);
     }
 }
