@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
+use App\Models\Course;
+
 class CourseAdminController extends Controller
 {
     /**
@@ -26,7 +28,7 @@ class CourseAdminController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Courses/Form');
     }
 
     /**
@@ -41,25 +43,16 @@ class CourseAdminController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Course $course)
     {
-        //
+        return Inertia::render('Courses/Form', [
+            'course' => $course,
+        ]);
     }
 
     /**

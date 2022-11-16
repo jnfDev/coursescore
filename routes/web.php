@@ -32,7 +32,8 @@ Route::middleware(['auth', 'adminonly' , 'verified'])->group(function(){
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('admin/courses', CourseAdminController::class);
+    Route::resource('admin/courses', CourseAdminController::class)
+        ->except(['show']);
 });
 
 require __DIR__.'/auth.php';
