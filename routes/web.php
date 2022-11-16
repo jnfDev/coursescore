@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseAdminController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,7 @@ Route::middleware(['auth', 'adminonly' , 'verified'])->group(function(){
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::resource('admin/courses', CourseAdminController::class);
 });
 
 require __DIR__.'/auth.php';
