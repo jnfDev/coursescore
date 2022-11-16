@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 use App\Models\Course;
+use App\Models\Source;
 
 class User extends Authenticatable
 {
@@ -49,7 +50,11 @@ class User extends Authenticatable
     public function courses()
     {
         return $this->hasMany(Course::class);
-    }    
+    }
+
+    public function sources(){
+        return $this->hasMany(Source::class);
+    }
 
     protected function isAdmin(): Attribute
     {
