@@ -160,5 +160,33 @@ class CourseAdminControllerTest extends TestCase
         $this->assertDatabaseHas('courses', [
             'name' => 'Course 1 UPDATED'
         ]);
-    }    
+    }
+
+    public function test_destroy()
+    {
+        /**
+         * @var User
+         */
+        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+
+        /**
+         * @var Source
+         */
+        $source = Source::factory()->for($adminUser)->create();
+
+        /**
+         * @var Course 
+         */
+        $course = Course::factory()->for($adminUser)->for($source)->create();
+
+        $this
+            ->actingAs($adminUser)
+            ->delete("/admin/courses/{$course->id}")
+            ->assertRedirect('admin/courses');
+        ;
+
+        $this->assertDatabaseMissing('courses', [
+            'id' => $course->id
+        ]);
+    }
 }
