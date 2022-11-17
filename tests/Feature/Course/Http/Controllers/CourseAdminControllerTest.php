@@ -133,4 +133,32 @@ class CourseAdminControllerTest extends TestCase
         ]);
     }
 
+    public function test_update()
+    {
+        /**
+         * @var User
+         */
+        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+
+        /**
+         * @var Source
+         */
+        $source = Source::factory()->for($adminUser)->create();
+
+        /**
+         * @var Course 
+         */
+        $course = Course::factory()->for($adminUser)->for($source)->create();
+
+        $this
+            ->actingAs($adminUser)
+            ->patch("/admin/courses/{$course->id}", [
+                'name' => 'Course 1 UPDATED'
+            ])
+            ->assertRedirect('admin/courses');
+
+        $this->assertDatabaseHas('courses', [
+            'name' => 'Course 1 UPDATED'
+        ]);
+    }    
 }

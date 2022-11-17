@@ -74,9 +74,19 @@ class CourseAdminController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Course $course)
     {
-        //
+        // TODO: Move to a Form Request class
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string|max:65535|nullable',
+            'url' => 'string|url|nullable',
+            'score' => 'not_in',
+        ]);
+
+        $course->update($validated);
+
+        return redirect(route('courses.index'));
     }
 
     /**
