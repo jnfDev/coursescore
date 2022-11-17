@@ -39,7 +39,19 @@ class CourseAdminController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // TODO: Move to a Form Request class
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'string|max:65535|nullable',
+            'url' => 'string|url|nullable',
+            'score' => 'not_in',
+            'user_id' => 'required|integer',
+            'source_id' => 'required|integer'
+        ]);
+
+        Course::create($validated);
+
+        return redirect(route('courses.index'));
     }
 
     /**

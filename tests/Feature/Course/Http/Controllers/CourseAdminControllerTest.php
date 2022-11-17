@@ -2,14 +2,18 @@
 
 namespace Tests\Feature\Course\Http\Controllers;
 
-use App\Models\User;
-use App\Models\Course;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
+use App\Models\User;
+use App\Models\Course;
+use App\Models\Source;
+
 class CourseAdminControllerTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function test_index()
     {
         /**
@@ -74,7 +78,15 @@ class CourseAdminControllerTest extends TestCase
             'is_admin' => true,
         ]);
 
-        $course = Course::factory()->for($adminUser)->create();
+        /**
+         * @var Source
+         */
+        $source = Source::factory()->for($user)->create();
+
+        /**
+         * @var Course
+         */
+        $course = Course::factory()->for($adminUser)->for($source)->create();
 
         $this
             ->actingAs($user)
@@ -87,4 +99,38 @@ class CourseAdminControllerTest extends TestCase
             ->assertStatus(200)
             ->assertSee($course->name);
     }
+
+    public function test_store()
+    {
+        /**
+         * @var User
+         */
+        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+
+        /**
+         * @var Source
+         */
+        $source = Source::factory()->for($adminUser)->create();
+
+        $courseName = 'Course 1';
+
+        $this
+            ->actingAs($adminUser)
+            ->post('/admin/courses/', [
+                'name' => $courseName,
+                'description' => fake()->text(),
+                'url' => fake()->url(),
+                'user_id' => $adminUser->id,
+                'source_id' => $source->id,
+            ])
+            ->assertRedirect('admin/courses')
+        ;
+
+        $this->assertDatabaseHas('courses', [
+            'name' => $courseName,
+            'user_id' => $adminUser->id,
+            'source_id' => $source->id,
+        ]);
+    }
+
 }

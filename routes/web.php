@@ -26,13 +26,13 @@ Route::get('/', function () {
 });
 
 
-Route::middleware(['auth', 'adminonly' , 'verified'])->group(function(){
+Route::prefix('admin')->middleware(['auth', 'adminonly' , 'verified'])->group(function(){
 
-    Route::get('/admin/dashboard', function () {
+    Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('admin/courses', CourseAdminController::class)
+    Route::resource('courses', CourseAdminController::class)
         ->except(['show']);
 });
 
