@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use App\Models\Course;
+use App\Http\Requests\AdminCourseRequest;
 
 class AdminCourseController extends Controller
 {
@@ -36,18 +36,9 @@ class AdminCourseController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(AdminCourseRequest $request)
     {
-        // TODO: Move to a Form Request class
-        $validated = $request->validate([
-            'name' => 'required|string|max:60',
-            'description' => 'string|max:2000|nullable',
-            'url' => 'string|url|nullable',
-            'score' => 'not_in',
-            'user_id' => 'required|integer',
-            'source_id' => 'required|integer'
-        ]);
-
+        $validated = $request->validated();
         Course::create($validated);
 
         return redirect(route('courses.index'));
@@ -73,16 +64,9 @@ class AdminCourseController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Course $course)
+    public function update(AdminCourseRequest $request, Course $course)
     {
-        // TODO: Move to a Form Request class
-        $validated = $request->validate([
-            'name' => 'required|string|max:60',
-            'description' => 'string|max:2000|nullable',
-            'url' => 'string|url|nullable',
-            'score' => 'not_in',
-        ]);
-
+        $validated = $request->validated();
         $course->update($validated);
 
         return redirect(route('courses.index'));
