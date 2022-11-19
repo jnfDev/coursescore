@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CourseAdminController;
+use App\Http\Controllers\AdminCourseController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -32,7 +32,7 @@ Route::prefix('admin')->middleware(['auth', 'adminonly' , 'verified'])->group(fu
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('courses', CourseAdminController::class)
+    Route::resource('courses', AdminCourseController::class)
         ->except(['show']);
 });
 

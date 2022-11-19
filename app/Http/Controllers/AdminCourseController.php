@@ -4,10 +4,9 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use Illuminate\Http\Request;
-
 use App\Models\Course;
 
-class CourseAdminController extends Controller
+class AdminCourseController extends Controller
 {
     /**
      * Display a listing of the resource.
