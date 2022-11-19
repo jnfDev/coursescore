@@ -41,8 +41,8 @@ class CourseAdminController extends Controller
     {
         // TODO: Move to a Form Request class
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'string|max:65535|nullable',
+            'name' => 'required|string|max:60',
+            'description' => 'string|max:2000|nullable',
             'url' => 'string|url|nullable',
             'score' => 'not_in',
             'user_id' => 'required|integer',
@@ -78,8 +78,8 @@ class CourseAdminController extends Controller
     {
         // TODO: Move to a Form Request class
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'string|max:65535|nullable',
+            'name' => 'required|string|max:60',
+            'description' => 'string|max:2000|nullable',
             'url' => 'string|url|nullable',
             'score' => 'not_in',
         ]);
