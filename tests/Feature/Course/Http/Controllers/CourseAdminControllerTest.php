@@ -81,7 +81,7 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var Source
          */
-        $source = Source::factory()->for($user)->create();
+        $source = Source::factory()->for($adminUser)->create();
 
         /**
          * @var Course
@@ -105,6 +105,11 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var User
          */
+        $user = User::factory()->create();
+
+        /**
+         * @var User
+         */
         $adminUser = User::factory()->create([ 'is_admin' => true ]);
 
         /**
@@ -113,6 +118,18 @@ class CourseAdminControllerTest extends TestCase
         $source = Source::factory()->for($adminUser)->create();
 
         $courseName = 'Course 1';
+
+        $this
+            ->actingAs($user)
+            ->post('/admin/courses', [
+                'name' => $courseName,
+                'description' => fake()->text(),
+                'url' => fake()->url(),
+                'user_id' => $adminUser->id,
+                'source_id' => $source->id,
+            ])
+            ->assertStatus(404)
+        ;
 
         $this
             ->actingAs($adminUser)
@@ -133,7 +150,7 @@ class CourseAdminControllerTest extends TestCase
         ]);
     }
 
-    public function test_store_validation()
+    public function test_validation()
     {
         /**
          * @var User
@@ -144,6 +161,11 @@ class CourseAdminControllerTest extends TestCase
          * @var Source
          */
         $source = Source::factory()->for($adminUser)->create();
+
+        /**
+         * @var Course 
+         */
+        $course = Course::factory()->for($adminUser)->for($source)->create();
         
         $badRequestCases = [
             'user_id' => [
@@ -192,11 +214,26 @@ class CourseAdminControllerTest extends TestCase
                 ->post('/admin/courses', $badRequestCase)
                 ->assertSessionHasErrors($errorKey)
             ;
+
+            if ( 'user_id' === $errorKey || 'source_id' === $errorKey ) {
+                continue;
+            }
+            
+            $this
+                ->actingAs($adminUser)
+                ->patch("/admin/courses/{$course->id}", $badRequestCase)
+                ->assertSessionHasErrors($errorKey)
+            ;
         }
     }
 
     public function test_update()
     {
+        /**
+         * @var User
+         */
+        $user = User::factory()->create();
+
         /**
          * @var User
          */
@@ -213,72 +250,24 @@ class CourseAdminControllerTest extends TestCase
         $course = Course::factory()->for($adminUser)->for($source)->create();
 
         $this
+            ->actingAs($user)
+            ->patch("/admin/courses/{$course->id}", [
+                'name' => 'Course 1 UPDATED'
+            ])
+            ->assertStatus(404)
+        ;
+
+        $this
             ->actingAs($adminUser)
             ->patch("/admin/courses/{$course->id}", [
                 'name' => 'Course 1 UPDATED'
             ])
-            ->assertRedirect('admin/courses');
+            ->assertRedirect('admin/courses')    
+        ;
 
         $this->assertDatabaseHas('courses', [
             'name' => 'Course 1 UPDATED'
         ]);
-    }
-
-    public function test_update_validation()
-    {
-        /**
-         * @var User
-         */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
-
-        /**
-         * @var Source
-         */
-        $source = Source::factory()->for($adminUser)->create();
-
-        /**
-         * @var Course 
-         */
-        $course = Course::factory()->for($adminUser)->for($source)->create();
-        
-        $badRequestCases = [
-            'name' => [
-                'user_id' => $adminUser->id, // OK
-                'source_id' => $source->id, // OK
-                'name' => '', // BAD empty
-            ],
-            'name' => [
-                'user_id' => $adminUser->id, // OK
-                'source_id' => $source->id, // OK
-                'name' => // BAD too long
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam consectetur iste quia tenetur ducimus porro repellendus',
-            ],
-            'description' => [
-                'user_id' => $adminUser->id, // OK
-                'source_id' => $source->id, // OK
-                'name' => 'Course 1', // OK
-                'description' => fake()->text(2500),
-            ],
-            'url' => [
-                'user_id' => $adminUser->id, // OK
-                'source_id' => $source->id, // OK
-                'name' => fake()->name(), // OK
-                'description' => // OK
-                    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam consectetur iste quia tenetur ducimus porro repellendus',
-                'url' => 'http//xdad¢#∞∞#@@|' // BAD wrong URL
-            ],
-
-        ];
-
-        foreach ($badRequestCases as $errorKey => $badRequestCase ) {
-            session()->flush();
-
-            $this
-                ->actingAs($adminUser)
-                ->patch("/admin/courses/{$course->id}", $badRequestCase)
-                ->assertSessionHasErrors($errorKey)
-            ;
-        }
     }
 
     public function test_destroy()
@@ -286,6 +275,11 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var User
          */
+        $user = User::factory()->create();
+
+        /**
+         * @var User
+         */
         $adminUser = User::factory()->create([ 'is_admin' => true ]);
 
         /**
@@ -297,6 +291,12 @@ class CourseAdminControllerTest extends TestCase
          * @var Course 
          */
         $course = Course::factory()->for($adminUser)->for($source)->create();
+
+        $this
+            ->actingAs($user)
+            ->delete("/admin/courses/{$course->id}")
+            ->assertStatus(404);
+        ;
 
         $this
             ->actingAs($adminUser)
