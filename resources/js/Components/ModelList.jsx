@@ -25,7 +25,7 @@ export default function ModelList({ items }) {
                                 🗑️ Delete
                             </Link>
 
-                            <Link className='text-sm hover:bg-gray-200 px-4 py-2 font-semibold hover:font-bold rounded' href="#">
+                            <Link className='text-sm hover:bg-gray-200 px-4 py-2 font-semibold hover:font-bold rounded' href={route('courses.edit', item.id)}>
                                 📝 Edit
                             </Link>
                         </td>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Course;
 use App\Http\Requests\AdminCourseRequest;
+use App\Models\Source;
+use Illuminate\Support\Facades\DB;
 
 class AdminCourseController extends Controller
 {
@@ -27,7 +29,11 @@ class AdminCourseController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Courses/Form');
+        $randomSourcesQuery = DB::table('sources')->inRandomOrder()->limit(4);
+
+        return Inertia::render('Courses/Create', [
+            'defaultSources' => $randomSourcesQuery->get(),
+        ]);
     }
 
     /**
@@ -52,8 +58,12 @@ class AdminCourseController extends Controller
      */
     public function edit(Course $course)
     {
-        return Inertia::render('Courses/Form', [
-            'course' => $course,
+        $courseSourceQuery = DB::table('sources')->where('id', $course->source_id);
+        $randomSourcesQuery = DB::table('sources')->inRandomOrder()->whereNot('id', $course->source_id)->limit(4);
+
+        return Inertia::render('Courses/Edit', [
+            'course'         => $course,
+            'defaultSources' => $randomSourcesQuery->union($courseSourceQuery)->get(),
         ]);
     }
 
