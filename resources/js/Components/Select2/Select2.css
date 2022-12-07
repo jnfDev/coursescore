@@ -1,0 +1,29 @@
+.Select2__input:focus {
+    box-shadow: none;
+}
+
+.Select2__control.Select2__control--is-focused,
+.Select2__control:focus {
+    box-shadow: none;
+    outline: 1px solid var(--border-color-focus) !important;
+    border: 1px solid var(--border-color-focus) !important;
+    outline-offset: 0;
+}
+
+.Select2__menu .Select2__option--is-focused,
+.Select2__menu .Select2__option--is-focused:active {
+    background-color: rgb(240, 240, 240);
+    color: #000;
+}
+
+.Select2__menu .Select2__option--is-selected,
+.Select2__menu .Select2__option--is-selected:active {
+    background-color: rgb(220, 220, 220);
+    color: #000;
+}
+
+.Select2__control {
+    width: 100%;
+    padding: 2px 3px;
+    border: 1px solid var(--border-color) !important;
+}
