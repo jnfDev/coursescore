@@ -12,6 +12,13 @@ class Source extends Model
 {
     use HasFactory;
 
+    /**
+     * TODO: Change it to a separate entity
+     */
+    public const CHANNELS = ['youtube', 'online-plataform', 'presential-plataform', 'undemy', 'university'];
+
+    protected $fillable = [ 'name', 'description', 'channel', 'user_id' ];
+
     public function user()
     {
         return $this->belongsTo(User::class);

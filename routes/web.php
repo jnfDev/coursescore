@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminCourseController;
+use App\Http\Controllers\AdminSourceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -33,7 +34,12 @@ Route::prefix('admin')->middleware(['auth', 'adminonly' , 'verified'])->group(fu
     })->name('dashboard');
 
     Route::resource('courses', AdminCourseController::class)
-        ->except(['show']);
+        ->except(['show'])
+    ;
+
+    Route::resource('sources', AdminSourceController::class)
+        ->except(['show'])
+    ;
 });
 
 require __DIR__.'/auth.php';
