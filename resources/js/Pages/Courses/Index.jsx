@@ -1,7 +1,7 @@
 import React from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/inertia-react';
-import ModelList from '@/Components/ModelList';
+import ResourceList from '@/Components/ResourceList';
 
 export default function Courses({ auth, errors, courses }) {
     return (
@@ -26,7 +26,7 @@ export default function Courses({ auth, errors, courses }) {
                             </div>
 
                             <div className='w-3/4 ml-6'>
-                                <ModelList items={courses} />
+                                <ResourceList resource="sources" items={courses} />
                             </div>
 
                         </div>
