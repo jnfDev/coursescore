@@ -25,7 +25,7 @@ export default function SourceForm({ action = 'store', source = {}, channels = [
         }
 
         if ('update' === action) {
-            patch(route('sources.update'))
+            patch(route('sources.update', source.id))
         }
     }
 

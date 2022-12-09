@@ -24,7 +24,7 @@ export default function Edit({ auth, errors, source, channels }) {
                             </div>
 
                             <div className='w-3/4 ml-6'>
-                                <SourceForm source={source} channels={channels} />
+                                <SourceForm action='update' source={source} channels={channels} />
                             </div>
                         </div>
                     </div>
