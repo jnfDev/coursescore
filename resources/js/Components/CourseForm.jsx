@@ -55,7 +55,7 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
                 </div>
             </div>
 
-            <div className='w-full p-4'>
+            <div className='p-4'>
                 <label className='font-bold block' htmlFor="course_url">URL</label>
                 <input
                     value={data.url} 
@@ -64,7 +64,7 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
                 />
             </div>
 
-            <div className='w-full p-4'>
+            <div className='p-4'>
                 <label className='font-bold' htmlFor="course_description">Description</label>
                 <textarea
                     value={data.description}

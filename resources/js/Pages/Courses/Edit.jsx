@@ -2,7 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import CourseForm from '@/Components/CourseForm';
 import { Head, Link } from '@inertiajs/inertia-react';
 
-export default function Create({ auth, errors, course, defaultSources }) {
+export default function Edit({ auth, errors, course, defaultSources }) {
     return (
         <AuthenticatedLayout
             auth={auth}

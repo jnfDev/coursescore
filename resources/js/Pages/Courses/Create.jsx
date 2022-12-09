@@ -25,7 +25,7 @@ export default function Create({ auth, errors, defaultSources }) {
                             </div>
 
                             <div className='w-3/4 ml-6'>
-                                <CourseForm  defaultSources={defaultSources} />
+                                <CourseForm defaultSources={defaultSources} />
                             </div>
                         </div>
                     </div>
