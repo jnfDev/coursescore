@@ -28,7 +28,9 @@ class AdminSourceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Source/Create');
+        return Inertia::render('Sources/Create', [
+            'channels' => Source::CHANNELS,
+        ]);
     }
 
     /**
@@ -53,8 +55,9 @@ class AdminSourceController extends Controller
      */
     public function edit(Source $source)
     {
-        return Inertia::render('Course/Edit', [
+        return Inertia::render('Sources/Edit', [
             'source' => $source,
+            'channels' => Source::CHANNELS 
         ]);
     }
 
