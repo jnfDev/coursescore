@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Course;
 use App\Http\Requests\AdminCourseRequest;
-use App\Models\Source;
 use Illuminate\Support\Facades\DB;
 
 class AdminCourseController extends Controller
