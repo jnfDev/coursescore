@@ -215,4 +215,61 @@ class AdminSourceControllerTest extends TestCase
             'id' => $source->id
         ]);
     }
+
+    public function test_search()
+    {
+        /**
+         * @var User
+         */
+        $user = User::factory()->create();
+
+        /**
+         * @var User
+         */
+        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+
+        Source::factory()->for($adminUser)->create(['name' => 'My Source 1']);
+        Source::factory()->for($adminUser)->create(['name' => 'My Source 2']);
+        Source::factory()->for($adminUser)->create(['name' => 'Regular Source 1']);
+        Source::factory()->for($adminUser)->create(['name' => 'Regular Source 2', 'description' => 'Just Another Source']);
+        Source::factory()->for($adminUser)->create(['name' => 'Just Another Source']);
+
+        // Search by name
+        $search = 'My Source';
+        $response = $this
+                        ->actingAs($adminUser)
+                        ->get("/admin/sources/search/{$search}");
+                 
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                [
+                    'name' => 'My Source 1'
+                ],
+                [
+                    'name' => 'My Source 2'
+                ],
+            ])
+        ;
+
+        // Search by name and description
+        $search = 'Just another source';
+        $response = $this
+            ->actingAs($adminUser)
+            ->get("/admin/sources/search/{$search}");
+
+        $response
+            ->assertStatus(200)
+            ->assertJson([
+                [
+                    'name' => 'Regular Source 2'
+                ],
+                [
+                    'name' => 'Just Another Source'
+                ],
+            ])
+        ;
+        
+        return;
+    }
 }

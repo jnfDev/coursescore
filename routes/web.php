@@ -40,6 +40,10 @@ Route::prefix('admin')->middleware(['auth', 'adminonly' , 'verified'])->group(fu
     Route::resource('sources', AdminSourceController::class)
         ->except(['show'])
     ;
+
+    Route::get('sources/search/{search}', [ AdminSourceController::class, 'search' ])
+        ->name('sources.search')
+    ;
 });
 
 require __DIR__.'/auth.php';

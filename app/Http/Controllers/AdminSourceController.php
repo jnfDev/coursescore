@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Source;
 use App\Http\Requests\AdminSourceRequest;
@@ -86,5 +87,21 @@ class AdminSourceController extends Controller
     {
         $source->delete();
         return redirect(route('sources.index'));
+    }
+
+    /**
+     * Search resource from storage.
+     * 
+     * @param string $search
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search(string $search)
+    {
+        $foundSources = DB::table('sources')
+                            ->where('name', 'LIKE', "%$search%")
+                            ->orWhere('description', 'LIKE', "%$search%")
+                            ->get();
+
+        return response()->json($foundSources);
     }
 }
