@@ -1,18 +1,16 @@
 import React from 'react';
-import { useForm } from '@inertiajs/inertia-react'
+import { useForm, usePage } from '@inertiajs/inertia-react'
 import Select2 from '@/Components/Select2/Select2'
 import InputError from '@/Components/InputError';
 
 export default function SourceForm({ action = 'store', source = {}, channels = [] }) {
-
+    const { auth: { user } } = usePage().props
     const { data, setData, post, patch, processing, errors } = useForm({
         name: source?.name ?? '',
         channel: source?.channel ?? '',
-        user_id: source?.userId ?? 1,
+        user_id: source?.userId ?? user.id,
         description: source?.description ?? ''
     })
-
-    console.log(errors);
 
     const _channels = channels.map(channel => ({ label: channel, value: channel }))
 
