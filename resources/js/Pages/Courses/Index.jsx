@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link } from '@inertiajs/inertia-react';
 import ResourceList from '@/Components/ResourceList';
 
-export default function Courses({ auth, errors, courses }) {
+export default function Index({ auth, errors, courses }) {
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -26,7 +26,7 @@ export default function Courses({ auth, errors, courses }) {
                             </div>
 
                             <div className='w-3/4 ml-6'>
-                                <ResourceList resource="sources" items={courses} />
+                                <ResourceList resource="courses" items={courses} />
                             </div>
 
                         </div>

@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { useForm } from '@inertiajs/inertia-react'
+import React from 'react';
+import { useForm, usePage } from '@inertiajs/inertia-react'
 import Select2 from '@/Components/Select2/Select2'
+import InputError from '@/Components/InputError';
 
 export default function CourseForm({ action = 'store', course = {}, defaultSources }) {
-
-    const { data, setData, get, post, patch, processing, errors } = useForm({
+    const { auth: { user } } = usePage().props
+    const { data, setData, post, patch, processing, errors } = useForm({
         name: course?.name ?? '',
-        sourceId: course?.source_id ?? 0, // default will be {}
+        source_id: course?.source_id ?? 0,
+        user_id: course?.user_id ?? user.id,
         url: course?.url ?? '',
         description: course?.description ?? ''
     })
@@ -26,11 +28,13 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
 
     const defaultOptions = defaultSources.map((source) => ({ label: source.name, value: source.id }))
 
-    /** TODO: Integrate with real endpoint */
-    const loadSources = (inputValue, callback) => {
-        setTimeout(() => {
-            callback(defaultOptions)
-        }, 1000)
+    const loadSources = async (search, callback) => {
+        return fetch(`/admin/sources/search/${search}`)
+            .then(response => response.json())
+            .then(data => {
+                const newOptions = data.map(d => ({ value: d.id, label: d.name }))
+                callback(newOptions)
+            })
     }
 
     return (
@@ -43,15 +47,17 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
                         onChange={e => setData('name', e.target.value)}
                         id='course_name'
                     />
+                    <InputError message={errors.name} className="mt-2" />
                 </div>
                 <div className='w-1/2 p-4'>
                     <label className='font-bold block' htmlFor="course_source">Source</label>
                     <Select2
-                        value={data.sourceId}
+                        value={data.source_id}
                         defaultOptions={defaultOptions}
                         loadOptions={loadSources}
-                        onChange={value => setData('sourceId', value)}
+                        onChange={opt => setData('source_id', opt.value)}
                     />
+                    <InputError message={errors.source_id} className="mt-2" />
                 </div>
             </div>
 
@@ -62,6 +68,7 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
                     onChange={e => setData('url', e.target.value)}
                     id='course_url'
                 />
+                <InputError message={errors.url} className="mt-2" />
             </div>
 
             <div className='p-4'>
@@ -72,6 +79,7 @@ export default function CourseForm({ action = 'store', course = {}, defaultSourc
                     id="course_description"
                     rows="5"
                 />
+                <InputError message={errors.description} className="mt-2" />
             </div>
             
             <div className='p-4 ml-auto text-right'>
