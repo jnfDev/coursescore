@@ -46,6 +46,8 @@ class AdminCourseController extends Controller
         $validated = $request->validated();
         Course::create($validated);
 
+        session()->flash('message', 'Course created successfully');
+
         return redirect(route('courses.index'));
     }
 
@@ -78,6 +80,8 @@ class AdminCourseController extends Controller
         $validated = $request->validated();
         $course->update($validated);
 
+        session()->flash('message', 'Course updated successfully');
+
         return redirect(route('courses.index'));
     }
 
@@ -90,6 +94,8 @@ class AdminCourseController extends Controller
     public function destroy(Course $course)
     {
         $course->delete();
+        session()->flash('message', 'Source deleted successfully');
+        
         return redirect(route('courses.index'));
     }
 }

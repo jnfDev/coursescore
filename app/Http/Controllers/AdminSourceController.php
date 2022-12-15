@@ -45,6 +45,8 @@ class AdminSourceController extends Controller
         $validated = $request->validated();
         Source::create($validated);
 
+        session()->flash('message', 'Source created successfully');
+
         return redirect(route('sources.index'));
     }
 
@@ -74,6 +76,8 @@ class AdminSourceController extends Controller
         $validated = $request->validated();
         $source->update($validated);
 
+        session()->flash('message', 'Source updated successfully');
+
         return redirect(route('sources.index'));
     }
 
@@ -86,6 +90,8 @@ class AdminSourceController extends Controller
     public function destroy(Source $source)
     {
         $source->delete();
+        session()->flash('message', 'Source deleted successfully');
+
         return redirect(route('sources.index'));
     }
 
