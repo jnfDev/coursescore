@@ -43,7 +43,10 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
-            'message' => fn () => $request->session()->get('message')
+            'status' => [
+                'error' => fn () => ! empty($request->session()->get('status.error')),
+                'message' => fn () => $request->session()->get('status.message')
+            ]
         ]);
     }
 }

@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Inertia\Inertia;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+
+use App\Exceptions\ModelCannotBeDeletedException;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -36,15 +40,25 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
-    /**
-     * Register the exception handling callbacks for the application.
-     *
-     * @return void
-     */
-    public function register()
+    public function render( $request, Throwable $e )
     {
-        $this->reportable(function (Throwable $e) {
-            //
-        });
-    }
+        /**
+         * @var \Illuminate\Http\Response
+         */
+        $response = parent::render($request, $e);
+
+        if ( $e instanceof ValidationException ) {
+            return $response;
+        }
+
+        if ( $e instanceof ModelCannotBeDeletedException ) {
+            return back()
+                ->with('status.error', true)
+                ->with('status.message', $e->getMessage());
+        }
+
+        return Inertia::render('Error', ['status' => $response->status()])
+            ->toResponse($request)
+            ->setStatusCode($response->status());
+    }     
 }

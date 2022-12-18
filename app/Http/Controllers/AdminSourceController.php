@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Throwable;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Source;
 use App\Http\Requests\AdminSourceRequest;
+use App\Exceptions\ModelCannotBeDeletedException;
 
 class AdminSourceController extends Controller
 {
@@ -47,7 +49,8 @@ class AdminSourceController extends Controller
 
         session()->flash('message', 'Source created successfully');
 
-        return redirect(route('sources.index'));
+        return redirect(route('sources.index'))
+            ->with('status.message', 'Source was created successfully.');
     }
 
     /**
@@ -78,7 +81,8 @@ class AdminSourceController extends Controller
 
         session()->flash('message', 'Source updated successfully');
 
-        return redirect(route('sources.index'));
+        return redirect(route('sources.index'))
+            ->with('status.message', 'Source was updated successfully.');
     }
 
     /**
@@ -89,10 +93,16 @@ class AdminSourceController extends Controller
      */
     public function destroy(Source $source)
     {
-        $source->delete();
-        session()->flash('message', 'Source deleted successfully');
+        $source->load('courses');
+        
+        if ($source->courses->count() > 0) {
+            throw new ModelCannotBeDeletedException('Source cannot be deleted, it still have courses attached to it.');
+        }
 
-        return redirect(route('sources.index'));
+        $source->delete();
+
+        return redirect(route('sources.index'))
+            ->with('status.message', 'Source was deleted successfully.');
     }
 
     /**

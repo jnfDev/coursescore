@@ -4,9 +4,7 @@ import { Head, Link } from '@inertiajs/inertia-react';
 import ResourceList from '@/Components/ResourceList';
 import Message from '@/Components/Message'
 
-export default function Index({ auth, errors, courses, message }) {
-
-    console.log(message);
+export default function Index({ auth, errors, courses, status }) {
     return (
         <AuthenticatedLayout
             auth={auth}
@@ -17,7 +15,7 @@ export default function Index({ auth, errors, courses, message }) {
             
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <Message message={message} />
+                    <Message error={status.error} message={status.message} />
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                         <div className="p-6 bg-white border-b border-gray-200 flex">
 

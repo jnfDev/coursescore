@@ -48,7 +48,8 @@ class AdminCourseController extends Controller
 
         session()->flash('message', 'Course created successfully');
 
-        return redirect(route('courses.index'));
+        return redirect(route('courses.index'))
+            ->with('status.message', 'Course was created successfully.');
     }
 
     /**
@@ -80,9 +81,8 @@ class AdminCourseController extends Controller
         $validated = $request->validated();
         $course->update($validated);
 
-        session()->flash('message', 'Course updated successfully');
-
-        return redirect(route('courses.index'));
+        return redirect(route('courses.index'))
+            ->with('status.message', 'Course was updated successfully.');
     }
 
     /**
@@ -96,6 +96,7 @@ class AdminCourseController extends Controller
         $course->delete();
         session()->flash('message', 'Source deleted successfully');
         
-        return redirect(route('courses.index'));
+        return redirect(route('courses.index'))
+            ->with('status.message', 'Course was deleted successfully.');
     }
 }
