@@ -6,8 +6,8 @@ import InputError from '@/Components/InputError';
 export default function CourseForm({ action = 'store', course = {}, defaultSources }) {
     const { auth: { user } } = usePage().props
     const { data, setData, post, patch, processing, errors } = useForm({
-        name: course?.name ?? '',
-        source_id: course?.source_id ?? 0,
+        name: course?.name ?? undefined,
+        source_id: course?.source_id ?? undefined,
         user_id: course?.user_id ?? user.id,
         url: course?.url ?? '',
         description: course?.description ?? ''
