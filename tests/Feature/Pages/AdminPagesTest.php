@@ -2,11 +2,15 @@
 
 namespace Tests\Feature\Pages;
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use App\Models\User;
 use Tests\TestCase;
 
 class AdminPages extends TestCase
 {
+    use RefreshDatabase;
+    
     /**
      * A basic feature test example.
      *
