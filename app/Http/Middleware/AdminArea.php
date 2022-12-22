@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Enums\UserRole;
 
-class AdminOnly
+class AdminArea
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,9 @@ class AdminOnly
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->role !== UserRole::Admin) {
+        if ($request->user()->role !== UserRole::Admin
+            && $request->user()->role !== UserRole::Contributor
+        ) {
             abort(404);
         }
 
