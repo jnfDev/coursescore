@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\User;
+Use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\Source;
 
@@ -19,7 +20,7 @@ class AdminCourseRequestTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source

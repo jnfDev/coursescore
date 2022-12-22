@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 use App\Models\User;
+use App\Enums\UserRole;
 use App\Models\Source;
 
 class AdminSourceRequestTest extends TestCase
@@ -22,7 +23,7 @@ class AdminSourceRequestTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source

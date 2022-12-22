@@ -2,10 +2,12 @@
 
 namespace Tests\Feature\Auth;
 
-use App\Models\User;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+use App\Models\User;
+use App\Enums\UserRole;
+use App\Providers\RouteServiceProvider;
 
 class AuthenticationTest extends TestCase
 {
@@ -57,7 +59,7 @@ class AuthenticationTest extends TestCase
     public function test_admin_users_are_redirected_to_admin_home_after_login()
     {
         $user = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin,
         ]);
 
         $response = $this->post('/login', [

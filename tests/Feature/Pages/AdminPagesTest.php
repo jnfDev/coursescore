@@ -2,10 +2,11 @@
 
 namespace Tests\Feature\Pages;
 
+use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 use App\Models\User;
-use Tests\TestCase;
+use App\Enums\UserRole;
 
 class AdminPages extends TestCase
 {
@@ -22,7 +23,7 @@ class AdminPages extends TestCase
          * @var User 
          */
         $user = User::factory()->create([
-            'is_admin' => true
+            'role' => UserRole::Admin
         ]);
 
         $response = $this->actingAs($user)->get("/admin/dashboard");

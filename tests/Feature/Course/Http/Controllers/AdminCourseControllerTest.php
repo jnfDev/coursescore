@@ -3,10 +3,10 @@
 namespace Tests\Feature\Course\Http\Controllers;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 use App\Models\User;
+use App\Enums\UserRole;
 use App\Models\Course;
 use App\Models\Source;
 
@@ -25,7 +25,7 @@ class CourseAdminControllerTest extends TestCase
          * @var User 
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin,
         ]);
 
         $this
@@ -50,7 +50,7 @@ class CourseAdminControllerTest extends TestCase
          * @var User 
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin
         ]);
 
         $this
@@ -75,7 +75,7 @@ class CourseAdminControllerTest extends TestCase
          * @var User 
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin
         ]);
 
         /**
@@ -110,7 +110,7 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source
@@ -160,7 +160,7 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source
@@ -203,7 +203,7 @@ class CourseAdminControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source

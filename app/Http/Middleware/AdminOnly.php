@@ -4,7 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use App\Providers\RouteServiceProvider;
+
+use App\Enums\UserRole;
 
 class AdminOnly
 {
@@ -17,7 +18,7 @@ class AdminOnly
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()->is_admin) {
+        if ($request->user()->role !== UserRole::Admin) {
             abort(404);
         }
 

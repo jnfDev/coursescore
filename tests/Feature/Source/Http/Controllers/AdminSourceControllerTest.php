@@ -6,6 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 use App\Models\User;
+use App\Enums\UserRole;
 use App\Models\Source;
 
 class AdminSourceControllerTest extends TestCase
@@ -23,7 +24,7 @@ class AdminSourceControllerTest extends TestCase
          * @var User
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true
+            'role' => UserRole::Admin
         ]);
 
         $this
@@ -50,7 +51,7 @@ class AdminSourceControllerTest extends TestCase
          * @var User 
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin
         ]);
 
         $this
@@ -77,7 +78,7 @@ class AdminSourceControllerTest extends TestCase
          * @var User 
          */
         $adminUser = User::factory()->create([
-            'is_admin' => true,
+            'role' => UserRole::Admin
         ]);
 
         /**
@@ -109,7 +110,7 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         $sourceName = 'Source 1';
 
@@ -151,7 +152,7 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source
@@ -192,7 +193,7 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source
@@ -226,7 +227,7 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
-        $adminUser = User::factory()->create([ 'is_admin' => true ]);
+        $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         Source::factory()->for($adminUser)->create(['name' => 'My Source 1']);
         Source::factory()->for($adminUser)->create(['name' => 'My Source 2']);
