@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Throwable;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
@@ -47,8 +46,6 @@ class AdminSourceController extends Controller
         $validated = $request->validated();
         Source::create($validated);
 
-        session()->flash('message', 'Source created successfully');
-
         return redirect(route('sources.index'))
             ->with('status.message', 'Source was created successfully.');
     }
@@ -79,8 +76,6 @@ class AdminSourceController extends Controller
         $validated = $request->validated();
         $source->update($validated);
 
-        session()->flash('message', 'Source updated successfully');
-
         return redirect(route('sources.index'))
             ->with('status.message', 'Source was updated successfully.');
     }
@@ -96,7 +91,7 @@ class AdminSourceController extends Controller
         $source->load('courses');
         
         if ($source->courses->count() > 0) {
-            throw new ModelCannotBeDeletedException('Source cannot be deleted, it still have courses attached to it.');
+            throw new ModelCannotBeDeletedException('The source cannot be deleted. It still has courses attached to it.');
         }
 
         $source->delete();

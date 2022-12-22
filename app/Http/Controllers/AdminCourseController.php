@@ -46,8 +46,6 @@ class AdminCourseController extends Controller
         $validated = $request->validated();
         Course::create($validated);
 
-        session()->flash('message', 'Course created successfully');
-
         return redirect(route('courses.index'))
             ->with('status.message', 'Course was created successfully.');
     }
