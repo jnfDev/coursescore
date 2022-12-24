@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\User;
 use App\Models\Source;
+use App\Models\Revision;
 
 class Course extends Model
 {
@@ -18,6 +19,11 @@ class Course extends Model
      * @var array
      */
     protected $fillable = [ 'name', 'description', 'url', 'source_id', 'user_id' ];
+
+    public function revision()
+    {
+        return $this->hasOne(Revision::class);
+    }
 
     public function user()
     {
