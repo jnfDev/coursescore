@@ -6,6 +6,8 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 
 use App\Models\Source;
+use App\Enums\UserRole;
+use App\Enums\ModelStatus;
 use App\Http\Requests\AdminSourceRequest;
 use App\Exceptions\ModelCannotBeDeletedException;
 
@@ -43,8 +45,13 @@ class AdminSourceController extends Controller
      */
     public function store(AdminSourceRequest $request)
     {
-        $validated = $request->validated();
-        Source::create($validated);
+        $sourceData = $request->validated();
+
+        if ($request->user()->role === UserRole::Contributor) {
+            $sourceData['status'] = ModelStatus::WaitingForCreate;
+        }
+
+        Source::create($sourceData);
 
         return redirect(route('sources.index'))
             ->with('status.message', 'Source was created successfully.');

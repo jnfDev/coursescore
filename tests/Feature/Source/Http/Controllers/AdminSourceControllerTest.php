@@ -8,6 +8,7 @@ use Tests\TestCase;
 use App\Models\User;
 use App\Enums\UserRole;
 use App\Models\Source;
+use App\Enums\ModelStatus;
 
 class AdminSourceControllerTest extends TestCase
 {
@@ -23,6 +24,13 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
+        $contributorUser = User::factory()->create([
+            'role' => UserRole::Contributor
+        ]);
+
+        /**
+         * @var User
+         */
         $adminUser = User::factory()->create([
             'role' => UserRole::Admin
         ]);
@@ -31,6 +39,12 @@ class AdminSourceControllerTest extends TestCase
             ->actingAs($user)
             ->get('/admin/sources')
             ->assertStatus(404)
+        ;
+
+        $this
+            ->actingAs($contributorUser)
+            ->get('/admin/sources')
+            ->assertStatus(200)
         ;
 
         $this
@@ -48,6 +62,13 @@ class AdminSourceControllerTest extends TestCase
         $user = User::factory()->create();
 
         /**
+         * @var User
+         */
+        $contributorUser = User::factory()->create([
+            'role' => UserRole::Contributor
+        ]);
+
+        /**
          * @var User 
          */
         $adminUser = User::factory()->create([
@@ -58,6 +79,12 @@ class AdminSourceControllerTest extends TestCase
             ->actingAs($user)
             ->get('/admin/sources/create')
             ->assertStatus(404)    
+        ;
+
+        $this
+            ->actingAs($contributorUser)
+            ->get('/admin/sources/create')
+            ->assertStatus(200)
         ;
 
         $this
@@ -73,6 +100,13 @@ class AdminSourceControllerTest extends TestCase
          * @var User 
          */
         $user = User::factory()->create();
+
+        /**
+         * @var User
+         */
+        $contributorUser = User::factory()->create([
+            'role' => UserRole::Contributor
+        ]);
 
         /**
          * @var User 
@@ -93,6 +127,13 @@ class AdminSourceControllerTest extends TestCase
         ;
 
         $this
+            ->actingAs($contributorUser)
+            ->get("/admin/sources/{$source->id}/edit")
+            ->assertStatus(200)
+            ->assertSee($source->name)
+        ;
+
+        $this
             ->actingAs($adminUser)
             ->get("/admin/sources/{$source->id}/edit")
             ->assertStatus(200)
@@ -110,26 +151,32 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
+        $contributorUser = User::factory()->create([ 'role' => UserRole::Contributor ]);
+
+        /**
+         * @var User
+         */
         $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
-        $sourceName = 'Source 1';
-
+        // Regular user
         $this
             ->actingAs($user)
             ->post('/admin/sources', [
                 'user_id' => $user->id,
-                'name' => $sourceName,
+                'name' => 'Source 1',
                 'description' => fake()->text(),
                 'channel' => fake()->randomElement(Source::CHANNELS)
             ])
             ->assertStatus(404)
         ;
 
+        // Contributor User
+        $source1 = 'Source 1';
         $this
-            ->actingAs($adminUser)
+            ->actingAs($contributorUser)
             ->post('/admin/sources', [
-                'user_id' => $adminUser->id,
-                'name' => $sourceName,
+                'user_id' => $contributorUser->id,
+                'name' => $source1,
                 'description' => fake()->text(),
                 'channel' => fake()->randomElement(Source::CHANNELS)
             ])
@@ -137,8 +184,28 @@ class AdminSourceControllerTest extends TestCase
         ;
 
         $this->assertDatabaseHas('sources', [
-            'name' => $sourceName,
-            'user_id' => $adminUser->id
+            'name' => $source1,
+            'user_id' => $contributorUser->id,
+            'status' => ModelStatus::WaitingForCreate
+        ]);
+
+        // Admin User
+        $source2 = 'Source 2';
+        $this
+            ->actingAs($adminUser)
+            ->post('/admin/sources', [
+                'user_id' => $adminUser->id,
+                'name' => $source2,
+                'description' => fake()->text(),
+                'channel' => fake()->randomElement(Source::CHANNELS)
+            ])
+            ->assertRedirect('admin/sources')
+        ;
+
+        $this->assertDatabaseHas('sources', [
+            'name' => $source2,
+            'user_id' => $adminUser->id,
+            'status' => ModelStatus::Publish
         ]);
     }
 

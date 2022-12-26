@@ -17,7 +17,21 @@ class Source extends Model
      */
     public const CHANNELS = ['youtube', 'online-plataform', 'presential-plataform', 'undemy', 'university'];
 
-    protected $fillable = [ 'name', 'description', 'channel', 'user_id' ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [ 'name', 'description', 'channel', 'user_id', 'status' ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'status' => ModelStatus::class
+    ];
 
     public function user()
     {
