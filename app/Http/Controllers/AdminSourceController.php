@@ -10,6 +10,7 @@ use App\Enums\UserRole;
 use App\Enums\ModelStatus;
 use App\Http\Requests\AdminSourceRequest;
 use App\Exceptions\ModelCannotBeDeletedException;
+use App\Models\Revision;
 
 class AdminSourceController extends Controller
 {
@@ -80,8 +81,22 @@ class AdminSourceController extends Controller
      */
     public function update(AdminSourceRequest $request, Source $source)
     {
-        $validated = $request->validated();
-        $source->update($validated);
+        $sourceData = $request->validated();
+
+        if ($request->user()->role === UserRole::Admin) {
+            $sourceData['status'] = ModelStatus::Publish;
+
+        } else {
+            Revision::create([
+                'parent_id'   => $source->id,
+                'parent_type' => Source::class,
+                'data'        => $sourceData
+            ]);
+
+            $sourceData = [ 'status' => ModelStatus::WaitingForUpdate ];
+        }
+
+        $source->update($sourceData);
 
         return redirect(route('sources.index'))
             ->with('status.message', 'Source was updated successfully.');
@@ -93,7 +108,7 @@ class AdminSourceController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Source $source)
+    public function destroy(AdminSourceRequest $request, Source $source)
     {
         $source->load('courses');
         
@@ -101,7 +116,12 @@ class AdminSourceController extends Controller
             throw new ModelCannotBeDeletedException('The source cannot be deleted. It still has courses attached to it.');
         }
 
-        $source->delete();
+        if ($request->user()->role === UserRole::Admin) {
+            $source->delete();
+
+        } else {
+            $source->update([ 'status' => ModelStatus::WaitingForDelete ]);
+        }
 
         return redirect(route('sources.index'))
             ->with('status.message', 'Source was deleted successfully.');

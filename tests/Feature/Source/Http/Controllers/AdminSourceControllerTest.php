@@ -158,7 +158,6 @@ class AdminSourceControllerTest extends TestCase
          */
         $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
-        // Regular user
         $this
             ->actingAs($user)
             ->post('/admin/sources', [
@@ -170,7 +169,6 @@ class AdminSourceControllerTest extends TestCase
             ->assertStatus(404)
         ;
 
-        // Contributor User
         $source1 = 'Source 1';
         $this
             ->actingAs($contributorUser)
@@ -189,7 +187,6 @@ class AdminSourceControllerTest extends TestCase
             'status' => ModelStatus::WaitingForCreate
         ]);
 
-        // Admin User
         $source2 = 'Source 2';
         $this
             ->actingAs($adminUser)
@@ -219,34 +216,57 @@ class AdminSourceControllerTest extends TestCase
         /**
          * @var User
          */
+        $contributorUser = User::factory()->create([ 'role' => UserRole::Contributor ]);
+
+        /**
+         * @var User
+         */
         $adminUser = User::factory()->create([ 'role' => UserRole::Admin ]);
 
         /**
          * @var Source
          */
-        $source = Source::factory()->for($adminUser)->create();
-
-        $newSourceName = 'Source 1 UPDATED';
+        $source = Source::factory()->for($adminUser)->create([ 'name' => 'Source 1' ]);
 
         $this
             ->actingAs($user)
             ->patch("/admin/sources/{$source->id}", [
-                'name' => $newSourceName
+                'name' => 'Source that never going be updated'
             ])
             ->assertStatus(404)
         ;
-
+        
+        $newSourceData = [
+            'name' => 'Source 1 name UPDATED',
+            'description' => 'Source 1 description UPDATED',
+            'channel' => Source::CHANNELS[0] // youtube
+        ];
+        
         $this
-            ->actingAs($adminUser)
-            ->patch("/admin/sources/{$source->id}", [
-                'name' => $newSourceName,
-                'channel' => fake()->randomElement(Source::CHANNELS)
-            ])
+            ->actingAs($contributorUser)
+            ->patch("/admin/sources/{$source->id}", $newSourceData)
             ->assertRedirect('admin/sources')    
         ;
 
         $this->assertDatabaseHas('sources', [
-            'name' => $newSourceName
+            'id' => $source->id,
+            'name' => $source->name, 
+            'status' => ModelStatus::WaitingForUpdate
+        ]);
+
+        $source->load('revision');
+        $revData = $source->revision->data;
+        $this->assertEquals($newSourceData, $revData);
+
+        $this
+            ->actingAs($adminUser)
+            ->patch("/admin/sources/{$source->id}", $newSourceData)
+            ->assertRedirect('admin/sources')
+        ;
+
+        $this->assertDatabaseHas('sources', [
+            'id' => $source->id,
+            'status' => ModelStatus::Publish
         ]);
     }
 
@@ -256,6 +276,11 @@ class AdminSourceControllerTest extends TestCase
          * @var User
          */
         $user = User::factory()->create();
+
+        /**
+         * @var User
+         */
+        $contributorUser = User::factory()->create([ 'role' => UserRole::Contributor ]);
 
         /**
          * @var User
@@ -274,6 +299,17 @@ class AdminSourceControllerTest extends TestCase
         ;
 
         $this
+            ->actingAs($contributorUser)
+            ->delete("/admin/sources/{$source->id}")
+            ->assertRedirect('admin/sources');
+        ;
+
+        $this->assertDatabaseHas('sources', [
+            'id' => $source->id,
+            'status' => ModelStatus::WaitingForDelete
+        ]);
+
+        $this
             ->actingAs($adminUser)
             ->delete("/admin/sources/{$source->id}")
             ->assertRedirect('admin/sources');
@@ -286,11 +322,6 @@ class AdminSourceControllerTest extends TestCase
 
     public function test_search()
     {
-        /**
-         * @var User
-         */
-        $user = User::factory()->create();
-
         /**
          * @var User
          */
