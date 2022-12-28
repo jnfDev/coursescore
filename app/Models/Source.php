@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\User;
 use App\Models\Course;
+use App\Models\Revision;
+use App\Enums\ModelStatus;
+
 
 class Source extends Model
 {
@@ -32,6 +35,11 @@ class Source extends Model
     protected $casts = [
         'status' => ModelStatus::class
     ];
+
+    public function revision()
+    {
+        return $this->morphOne(Revision::class, 'parent');
+    }
 
     public function user()
     {

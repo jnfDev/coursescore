@@ -22,7 +22,7 @@ class Course extends Model
 
     public function revision()
     {
-        return $this->hasOne(Revision::class);
+        return $this->morphOne(Revision::class, 'parent');
     }
 
     public function user()

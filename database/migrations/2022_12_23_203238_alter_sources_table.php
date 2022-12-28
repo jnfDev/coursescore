@@ -19,7 +19,6 @@ return new class extends Migration
 
         Schema::table('sources', function (Blueprint $table) use ($status) {
             $table->enum('status', $status);
-            $table->foreignId('revision_id')->nullable()->constrained();
         });
     }
 

@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('revisions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('parent_id');
+            $table->string('parent_type');
             $table->json('data');
             $table->timestamps();
         });
